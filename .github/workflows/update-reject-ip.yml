@@ -1,0 +1,50 @@
+name: Update reject-ip rules
+
+on:
+  schedule:
+    # UTC 20:00，对应北京时间次日 04:00，可按需修改
+    - cron: '0 20 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-reject-ip
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: 合并 JSON 规则
+        run: python3 scripts/merge_ip.py
+
+      - name: 安装 sing-box
+        run: |
+          curl -fsSL https://sing-box.app/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: 编译 srs 二进制规则
+        run: |
+          sing-box rule-set compile --output rules/reject-ip.srs rules/reject-ip.json
+
+      - name: 提交并推送更改
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add rules/reject-ip.json rules/reject-ip.srs
+          if git diff --cached --quiet; then
+            echo "内容无变化，跳过提交"
+          else
+            git commit -m "chore: 自动更新 reject-ip 规则 ($(date -u +'%Y-%m-%d'))"
+            git push
+          fi
