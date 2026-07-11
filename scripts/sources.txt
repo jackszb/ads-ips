@@ -1,0 +1,7 @@
+# 广告 IP 规则数据源列表
+# 每行一个 URL，以 # 开头的行为注释，空行会被忽略
+#
+# 新增数据源时，直接在下面追加一行 URL 即可，无需修改脚本或工作流
+
+https://raw.githubusercontent.com/jackszb/sukka-json/main/ip/reject.json
+https://raw.githubusercontent.com/jackszb/rules-build/main/rules-src/adguard-ip.json
