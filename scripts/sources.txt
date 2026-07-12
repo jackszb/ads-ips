@@ -4,4 +4,4 @@
 # 新增数据源时，直接在下面追加一行 URL 即可，无需修改脚本或工作流
 
 https://raw.githubusercontent.com/jackszb/sukka-json/main/ip/reject.json
-https://raw.githubusercontent.com/jackszb/rules-build/main/rules-src/adguard-ip.json
+https://raw.githubusercontent.com/jackszb/adguard-ips/main/adguard-ip.json
